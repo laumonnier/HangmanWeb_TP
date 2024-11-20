@@ -1,0 +1,66 @@
+{{ define "hangmangame" }}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="static/hangmangamestyle.css"/>
+    <title>{{.TitleGame}}</title>
+</head>
+<body>
+    <div class="container">
+        <h1 id="hangmangameTitle">{{.TitleGame}}</h1>
+        
+        <!-- Affichage du mot à deviner -->
+        <div class="word">
+            {{if eq .State "lost"}}
+                {{.Word}} <!-- Si le joueur a perdu, afficher le mot complet -->
+            {{else}}
+                {{.DisplayedWord}} <!-- Sinon afficher le mot avec les lettres devinées -->
+            {{end}}
+        </div>
+
+        <!-- Affichage de toutes les lettres essayées (correctes ou non) -->
+        <div class="tried-letters">
+            <p>Lettres essayées : {{.Tried}}</p>
+        </div>
+        
+        <!-- Affichage des tentatives restantes -->
+        <div class="attempts">
+            <p>Tentatives restantes : {{ .RemainingAttempts }}</p>
+        </div>
+
+        <!-- Message de fin de jeu -->
+        {{if eq .State "lost"}}
+        <div class="message">
+            <p id="defeat">Désolé, vous avez perdu ! Le mot était : {{.Word}}.</p>
+        </div>
+        <a class="restart" href="/hangmangame/restart">Rejouer</a>
+        {{else if eq .State "won"}}
+        <div class="message">
+            <p id="victory">Félicitations, vous avez gagné !</p>
+        </div>
+        <a class="restart" href="/hangmangame/restart">Rejouer</a>
+        {{else}}
+        <!-- Formulaire de supposition -->
+        <form action="/guess" method="POST" class="form-container">
+            <label for="guess">Devinez une lettre :</label>
+            <input type="text" name="guess" id="guess" maxlength="1" required autofocus />
+            <input type="submit" value="Soumettre" />
+        </form>
+        {{end}}
+
+        <!-- Affichage des lettres déjà devinées -->
+        <div class="guessed-letters">
+            <p>Lettres devinées : {{.Guessed}}</p>
+        </div>
+    </div>
+    <div class="hangman-drawing">
+        <img src="{{.HangmanImage}}" alt="Pendu" style="max-width: 300px;"/>
+    </div>
+    <a href="/">
+        <button id="returnHome">Retour à la page d'accueil</button>
+    </a>
+</body>
+</html>
+{{ end }}
